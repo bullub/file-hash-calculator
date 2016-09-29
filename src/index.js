@@ -91,7 +91,7 @@ function calculateOne(data, onResults, childProcesses) {
  * 计算哈希值
  * @param srcDir {String} 源路径
  * @param excludes {String|Array} 排除规则
- * @param outputFilePath {String} 输出文件文件的路径
+ * @param outputFilePath {String} 输出文件的路径,可选
  * @param outPutItemFormatter {Function} 输出数据的单项格式化函数
  */
 function calculateHashes(srcDir, excludes, outputFilePath, outPutItemFormatter=defaultOutPutItemFormatter) {
@@ -110,7 +110,9 @@ function calculateHashes(srcDir, excludes, outputFilePath, outPutItemFormatter=d
             //计算hash
             console.time("File hash calculate task");
             startCalculators(srcDir, files, function(results){
-                fs.writeFile(outputFilePath, results, {encoding: 'utf-8'});
+                if(!!outputFilePath) {
+                    fs.writeFile(outputFilePath, results, {encoding: 'utf-8'});
+                }
                 console.timeEnd("File hash calculate task");
                 resolve(results);
             }, outPutItemFormatter);

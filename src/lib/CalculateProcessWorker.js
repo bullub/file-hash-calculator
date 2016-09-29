@@ -5,7 +5,6 @@
 const HashCalculator = require("./HashCalculator");
 const fs = require("fs");
 const path = require("path");
-const co = require("co");
 
 process.on('message', function (message) {
 
@@ -15,9 +14,7 @@ process.on('message', function (message) {
     }
 
     let results = [];
-    let {files, baseDir, cpId} = message,
-        completed = 0;
-
+    let {files, baseDir, cpId} = message;
 
     for (let i = 0, buffer, len = files.length; i < len; i++) {
         buffer = fs.readFileSync(files[i]);
@@ -29,5 +26,4 @@ process.on('message', function (message) {
     }
 
     process.send({cpId:cpId, results: results});
-    // process.exit();
 });
