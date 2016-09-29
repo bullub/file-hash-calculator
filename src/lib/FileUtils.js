@@ -3,11 +3,19 @@
  */
 "use strict";
 const fs = require("fs"),
-    path = require("path");
+    path = require("path"),
+    HashCalculator = require("./HashCalculator");
+
+//默认只能同时打开1000个
+const OPEN_FILE_LIMIT = 1024;
+const openFileQueue = [];
+//当前已打开文件个数
+let currentOpened = 0;
 
 module.exports = {
     statsAsync,
-    readDirAsync
+    readDirAsync,
+    readFileAndCalculateHashAndSize
 };
 
 /**
@@ -50,5 +58,46 @@ function readDirAsync(dir, pathFilter) {
             }
             resolve(_files);
         });
+    });
+}
+
+/**
+ * 读取文件，并且计算hash值和文件大小
+ * @param filePath {String} 文件绝对路径
+ * @param onFinish {Function} 计算完成回调
+ */
+function readFileAndCalculateHashAndSize(filePath, onFinish) {
+
+    //防止 EMFILE 错误，将最大打开文件数控制在1024个，其余排队
+    if(currentOpened >= OPEN_FILE_LIMIT) {
+        openFileQueue.unshift({path: filePath, onFinish: onFinish});
+        return ;
+    }
+
+    let fileSize = 0;
+    let hashCalculator = new HashCalculator();
+
+    currentOpened ++;
+
+    let fis = fs.createReadStream(filePath);
+
+    fis.on("readable", function() {
+        // console.log("readable", filePath);
+        var chunk;
+        while (null !== (chunk = fis.read())) {
+            hashCalculator.update(chunk);
+            fileSize += chunk.length;
+        }
+    });
+    fis.on("end", function() {
+        // fis.close();
+        onFinish(filePath, hashCalculator.digest('hex'), fileSize);
+
+        currentOpened --;
+
+        if(openFileQueue.length > 0) {
+            let item = openFileQueue.pop();
+            readFileAndCalculateHashAndSize(item.path, item.onFinish);
+        }
     });
 }

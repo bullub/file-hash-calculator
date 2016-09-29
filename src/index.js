@@ -15,7 +15,7 @@ module.exports = calculateHashes;
  * @param baseDir {String} 根路径，绝对路径
  * @param filePaths {Array} 所有文件路径
  * @param onFinish {Function} 计算完成
- * @param outPutItemFormatter {Function} 格式化单项输出的函数
+ * @param outputItemFormatter {Function} 格式化单项输出的函数
  */
 function startCalculators(baseDir, filePaths, onFinish, outputItemFormatter) {
 
@@ -27,6 +27,10 @@ function startCalculators(baseDir, filePaths, onFinish, outputItemFormatter) {
         completed = 0,
         //子进程集合
         childProcesses = [];
+
+    if(!filePaths || !filePaths.length) {
+        onFinish("");
+    }
 
     if(cpus >= fileNums) {
         cpus = 1;
