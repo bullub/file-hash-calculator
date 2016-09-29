@@ -83,4 +83,22 @@ describe("function calculateHashes test", function () {
             assert.equal(result, "ffc.txt,302c36eca3d1ad845bea5c0318e01a876b525a83,13\nbcd/bbc.html.js,e709c2a6efa543b0a457ce52ff72de876bd1b661,52\nbcd/ccc/file3,5e3d61ef6b90f7550f0744ea2de6c159c5d0b4b9,18\n");
         });
     });
+
+    it("不传可选参数： ", function () {
+        return co(function*() {
+            console.log('-----------------------------------------------------');
+            let result = yield calculateHashes(dataPath);
+
+            assert.equal(result, "abc.js,73e35fa87eee262319aaebf1de0d65ba64348422,9\nffc.txt,302c36eca3d1ad845bea5c0318e01a876b525a83,13\nbcd/bbc.html.js,e709c2a6efa543b0a457ce52ff72de876bd1b661,52\nbcd/ccc/file3,5e3d61ef6b90f7550f0744ea2de6c159c5d0b4b9,18\n");
+        });
+    });
+
+    it("测试多文件： ", function () {
+        return co(function*() {
+            console.log('-----------------------------------------------------');
+            let result = yield calculateHashes(path.join(__dirname, ".."));
+
+            // assert.equal(result, "abc.js,73e35fa87eee262319aaebf1de0d65ba64348422,9\nffc.txt,302c36eca3d1ad845bea5c0318e01a876b525a83,13\nbcd/bbc.html.js,e709c2a6efa543b0a457ce52ff72de876bd1b661,52\nbcd/ccc/file3,5e3d61ef6b90f7550f0744ea2de6c159c5d0b4b9,18\n");
+        });
+    });
 });
