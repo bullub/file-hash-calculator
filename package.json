@@ -1,0 +1,29 @@
+{
+  "name": "file-hash-calculator",
+  "version": "0.0.1",
+  "description": "一个文件hash计算器",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "mocha --harmony",
+    "test-cov": "node --harmony node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- --reporter dot",
+    "test-travis": "node --harmony node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha --report lcovonly -- --reporter dot"
+  },
+  "repository": "bullub/file-hash-calculator",
+  "author": "bullub",
+  "license": "MIT",
+  "files": [
+    "src/index.js"
+  ],
+  "devDependencies": {
+    "browserify": "^10.0.0",
+    "istanbul-harmony": "0",
+    "mocha": "^2.0.0",
+    "mz": "^1.0.2"
+  },
+  "engines": {
+    "node": ">= 6.5.0"
+  },
+  "dependencies": {
+    "co": "^4.6.0"
+  }
+}
