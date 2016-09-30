@@ -65,17 +65,21 @@ function readDirAsync(dir, pathFilter) {
  * 读取文件，并且计算hash值和文件大小
  * @param filePath {String} 文件绝对路径
  * @param onFinish {Function} 计算完成回调
+ * @param algorithm {String} 用于计算Hash的算法名
+ * @param fileOpenLimit {Number} 单进程能打开的最大文件数
  */
-function readFileAndCalculateHashAndSize(filePath, onFinish) {
+function readFileAndCalculateHashAndSize(filePath, onFinish, algorithm, fileOpenLimit) {
+
+    fileOpenLimit || (fileOpenLimit = OPEN_FILE_LIMIT);
 
     //防止 EMFILE 错误，将最大打开文件数控制在1024个，其余排队
-    if(currentOpened >= OPEN_FILE_LIMIT) {
-        openFileQueue.unshift({path: filePath, onFinish: onFinish});
+    if(currentOpened >= fileOpenLimit) {
+        openFileQueue.unshift({path: filePath, onFinish, algorithm, fileOpenLimit});
         return ;
     }
 
     let fileSize = 0;
-    let hashCalculator = new HashCalculator();
+    let hashCalculator = new HashCalculator(algorithm);
 
     currentOpened ++;
 
@@ -97,7 +101,7 @@ function readFileAndCalculateHashAndSize(filePath, onFinish) {
 
         if(openFileQueue.length > 0) {
             let item = openFileQueue.pop();
-            readFileAndCalculateHashAndSize(item.path, item.onFinish);
+            readFileAndCalculateHashAndSize(item.path, item.onFinish, item.algorithm, item.fileOpenLimit);
         }
     });
 }

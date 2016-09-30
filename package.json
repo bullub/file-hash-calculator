@@ -1,6 +1,6 @@
 {
   "name": "file-hash-calculator",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "一个文件hash计算器",
   "main": "src/index.js",
   "scripts": {

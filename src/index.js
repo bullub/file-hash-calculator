@@ -14,10 +14,12 @@ module.exports = calculateHashes;
  * 开始计算hash值
  * @param baseDir {String} 根路径，绝对路径
  * @param filePaths {Array} 所有文件路径
+ * @param algorithm {String} 用于计算hash的算法
+ * @param fileOpenLimit {Number} 单进程能打开的最大文件数
  * @param onFinish {Function} 计算完成
  * @param outputItemFormatter {Function} 格式化单项输出的函数
  */
-function startCalculators(baseDir, filePaths, onFinish, outputItemFormatter) {
+function startCalculators(baseDir, filePaths, algorithm, fileOpenLimit, onFinish, outputItemFormatter) {
 
     let cpus = os.cpus().length,
         fileNums = filePaths.length,
@@ -67,7 +69,8 @@ function startCalculators(baseDir, filePaths, onFinish, outputItemFormatter) {
 
         //使用单个cpu计算一部分
         calculateOne({
-            signal: process.signal,
+            fileOpenLimit,
+            algorithm,
             files: filePaths.slice(start, end),
             baseDir: baseDir + path.sep
         }, onChildProcessMessage, childProcesses);
@@ -94,13 +97,22 @@ function calculateOne(data, onResults, childProcesses) {
 /**
  * 计算哈希值
  * @param srcDir {String} 源路径
- * @param excludes {String|Array} 排除规则
- * @param outputFilePath {String} 输出文件的路径,可选
+ * @param options {Object} 可选参数，调用配置
+ *              {
+ *                  excludes: {String|Array}    排除的文件
+  *                 outputFilePath: {String} 结果输出的文件路径
+  *                 algorithm: {String} hash算法名，默认： "sha1"， 可选： "sha256","md5"...
+  *                 fileOpenLimit: {Number} 单进程能打开的最大文件数
+ *              }
  * @param outPutItemFormatter {Function} 输出数据的单项格式化函数
  */
-function calculateHashes(srcDir, excludes, outputFilePath, outPutItemFormatter=defaultOutPutItemFormatter) {
+function calculateHashes(srcDir, options, outPutItemFormatter=defaultOutPutItemFormatter) {
 
     let files = [];
+
+    options || (options = {});
+
+    let {excludes, outputFilePath, algorithm, fileOpenLimit} = options;
 
     return new Promise((resolve, reject)=>{
         //迭代出所有文件
@@ -113,7 +125,7 @@ function calculateHashes(srcDir, excludes, outputFilePath, outPutItemFormatter=d
 
             //计算hash
             console.time("File hash calculate task");
-            startCalculators(srcDir, files, function(results){
+            startCalculators(srcDir, files, algorithm, fileOpenLimit, function(results){
                 if(!!outputFilePath) {
                     fs.writeFile(outputFilePath, results, {encoding: 'utf-8'});
                 }

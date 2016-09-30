@@ -14,7 +14,7 @@ process.on('message', function (message) {
     }
 
     let results = [];
-    let {files, baseDir, cpId} = message;
+    let {files, algorithm, baseDir, cpId, fileOpenLimit} = message;
     let total = files.length;
     let completed = 0;
 
@@ -41,7 +41,7 @@ process.on('message', function (message) {
         let path = files[i];
 
         //使用stream去读取，通过缓冲区读取
-        FileUtils.readFileAndCalculateHashAndSize(path,onCalculateFinish);
+        FileUtils.readFileAndCalculateHashAndSize(path,onCalculateFinish, algorithm, fileOpenLimit);
     }
 });
 
