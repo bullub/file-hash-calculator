@@ -20,11 +20,11 @@ npm install file-hash-calculator@0.0.3 --save
 * 示例  
 
 ```javascript
-	const fhc = require('file-hash-calculator');
-	fhc(srcPath, {algorithm: 'md5'}, outputItemFormatter)
-		.then(results=>{
-			console.log(results);
-		});
+const fhc = require('file-hash-calculator');
+fhc(srcPath, {algorithm: 'md5'}, outputItemFormatter)
+	.then(results=>{
+		console.log(results);
+	});
 ```
 >输入  
 
@@ -74,11 +74,11 @@ npm install file-hash-calculator@0.0.2 --save
 2. 使用    
 
 ```javascript
-	const fhc = require('file-hash-calculator');
-	fhc(srcPath, excludes, outputFilePath, outputItemFormatter)
-		.then(results=>{
-			console.log(results);
-		});
+const fhc = require('file-hash-calculator');
+fhc(srcPath, excludes, outputFilePath, outputItemFormatter)
+	.then(results=>{
+		console.log(results);
+	});
 ```
 >输入  
 
