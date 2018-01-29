@@ -1,7 +1,7 @@
 # file-hash-calculator  
 [toc]  
 
-#简介  
+## 简介  
 该项目简单实现了多进程计算目录中文件的hash值
 ##修改记录  
 0.0.3  
@@ -9,7 +9,7 @@
 >2. 修改调用参数列表，详见使用方法@0.0.3
 >3. 新增参数 `algorithm` 控制计算hash的算法，默认: sha1, 支持： md5, sha256等
 
-##使用方法@0.0.3  
+### 使用方法@0.0.3  
 1. 安装  
 
 ```
@@ -64,7 +64,7 @@ function defaultOutPutItemFormatter(item) {
 
 * {Promise}  返回promise对象，resolve the results。  
 
-##使用方法@0.0.2  
+### 使用方法@0.0.2  
 
 1. 安装  
 
